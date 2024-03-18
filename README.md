@@ -1,10 +1,10 @@
 # Alokator pamięci, wymagania na ocenę 3,0:
 
-Celem projektu jest przygotowanie managera pamięci do zarządzania stertą własnego programu. W tym celu należy przygotować własne wersje funkcji malloc, calloc, free oraz realloc. Całość należy uzupełnić dodatkowymi funkcjami narzędziowymi, pozwalającymi na monitorowania stanu, spójności oraz defragmentację obszaru sterty.
+Celem projektu jest przygotowanie managera pamięci do zarządzania stertą własnego programu. W tym celu należy przygotować własne wersje funkcji `malloc`, `calloc`, `free` oraz `realloc`. Całość należy uzupełnić dodatkowymi funkcjami narzędziowymi, pozwalającymi na monitorowania stanu, spójności oraz defragmentację obszaru sterty.
 
 Przygotowane funkcje muszą realizować następujące funkcjonalności:
 
-- Standardowe zadania alokacji/dealokacji zgodne z API rodziny malloc. Należy dokładnie odwzorować zachowanie własnych implementacji z punktu widzenia wywołującego je kodu.
+- Standardowe zadania alokacji/dealokacji zgodne z API rodziny `malloc`. Należy dokładnie odwzorować zachowanie własnych implementacji z punktu widzenia wywołującego je kodu.
 - Możliwość resetowania sterty do stanu z chwili uruchomienia programu.
 - Możliwość samoistnego zwiększania regionu sterty poprzez generowanie żądań dla systemu operacyjnego.
 - Płotki.
@@ -24,13 +24,13 @@ Obszar po alokacji:  (...) CHHHHbbbTTTT.CCCCHHHHbbbbbTTTT...CCCCHHHHbb (...)
 ```
 Legenda:
 
-    C - struktura kontrolna bloku (nagłowek bloku),
-    H - płotek górny (head),
-    T - płotek dolny (tail),
-    b - blok użytkownika,
-    ^ - pierwszy bajt bloku użytkownika, na który wskazują wskaźniki zwracane przez funkcje heap_*.
+ - C - struktura kontrolna bloku (nagłowek bloku),
+ - H - płotek górny (head),
+ - T - płotek dolny (tail),
+ - b - blok użytkownika,
+ - ^ - pierwszy bajt bloku użytkownika, na który wskazują wskaźniki zwracane przez funkcje `heap_*`.
 
-Płotki muszą być ułożone w pamięci bloku w taki sposób, aby między nimi a blokiem uzytkownika (b) nie było wolnej przestrzeni. Zwróć zatem uwagę na kilka wolnych bajtów (...) między płotkiem dolnym (T) a nagłówkiem następnego bloku. W przypadku, gdy położenie bloków nagłówkowych wyrównane jest do 4/8 bajtów (tzn. adresy bloków położone są w adresach podzielnych, bez reszty, przez 4 i 8) to miejsce na to wyrównanie (ang. paddign) znajduje się między ostatnim bajtem płotka dolnego (T) a pierwszym bajtem nagłówka kolejnego bloku (C).
+Płotki muszą być ułożone w pamięci bloku w taki sposób, aby między nimi a blokiem uzytkownika `(b)` nie było wolnej przestrzeni. Zwróć zatem uwagę na kilka wolnych bajtów `(...)` między płotkiem dolnym `(T)` a nagłówkiem następnego bloku. W przypadku, gdy położenie bloków nagłówkowych wyrównane jest do 4/8 bajtów (tzn. adresy bloków położone są w adresach podzielnych, bez reszty, przez 4 i 8) to miejsce na to wyrównanie (ang. paddign) znajduje się między ostatnim bajtem płotka dolnego `(T)` a pierwszym bajtem nagłówka kolejnego bloku `(C)`.
 
 Przykłady (wyrównanie do 4 znaków; wyłącznie na potrzeby ilustracji):
 ```
@@ -47,20 +47,20 @@ Przykłady (wyrównanie do 4 znaków; wyłącznie na potrzeby ilustracji):
 
 **Funkcje do implementacji**
 
-Przedstawione poniżej funkcje należy zaimplementować zgodnie z podaną specyfikacją. Wszystkie funkcje API sterty, wraz z definicjami struktur i typów danych, należy umieścić w pliku nagłówkowym heap.h. Natomiast faktyczne implementacje należy umieścić w pliku źródłwym heap.c.
+Przedstawione poniżej funkcje należy zaimplementować zgodnie z podaną specyfikacją. Wszystkie funkcje API sterty, wraz z definicjami struktur i typów danych, należy umieścić w pliku nagłówkowym heap.h. Natomiast faktyczne implementacje należy umieścić w pliku źródłwym `heap.c`.
 
 ```int heap_setup(void);```
 
 Funkcja heap_setup inicjuje (organizuje) stertę w obszarze przeznaczonej do tego pamięci. Wielkość obszaru pamięci dostępnej dla sterty nie jest znana w chwili startu programu.
 
-W rzeczywistych przypadkach kod obsługujący stertę korzysta z funkcji systemu operacyjnego sbrk(). Jednak na potrzeby tego projektu należy korzystać z funkcji custom_sbrk() o prototypie danym plikiem nagłówkowym custom_unistd.h. Jest ona zgodna ze swoim odpowiednikiem (sbrk()) zarówno co do parametrów jak i zachowania, widocznego z punktu widzenia kodu wywołującego (tutaj - alokatora).
+W rzeczywistych przypadkach kod obsługujący stertę korzysta z funkcji systemu operacyjnego `sbrk()`. Jednak na potrzeby tego projektu należy korzystać z funkcji `custom_sbrk()` o prototypie danym plikiem nagłówkowym `custom_unistd.h`. Jest ona zgodna ze swoim odpowiednikiem (`sbrk()`) zarówno co do parametrów jak i zachowania, widocznego z punktu widzenia kodu wywołującego (tutaj - alokatora).
 
 Wartość zwracana:
 
 - 0 – jeżeli sterta została poprawnie zainicjowana, lub
 - -1 – jeżeli sterty nie udało się zainicjować, np. system odmówił przydziału pamięci już na starcie.
 
-Uwaga: Funkcja ta jest wykorzystywana w testach do przywracania warunków początkowych sterty, ale nie jest testowana oddzielnie. Oznacza to, że błędy pojawiające się w kolejnych funkcjach i testach mogą być związane z błędnym działaniem heap_setup().
+Uwaga: Funkcja ta jest wykorzystywana w testach do przywracania warunków początkowych sterty, ale nie jest testowana oddzielnie. Oznacza to, że błędy pojawiające się w kolejnych funkcjach i testach mogą być związane z błędnym działaniem `heap_setup()`.
 
 ```void heap_clean(void);```
 
